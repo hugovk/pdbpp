@@ -28,6 +28,12 @@ jobs:
       matrix:
         include:
           # Linux
+          - tox_env: "py312-coverage"
+            python: "3.12"
+            os: ubuntu-22.04
+          - tox_env: "py311-coverage"
+            python: "3.11"
+            os: ubuntu-22.04
           - tox_env: "py310-coverage"
             python: "3.10"
             os: ubuntu-20.04
@@ -88,11 +94,11 @@ jobs:
             os: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 2000
     - name: Set up Python ${{ matrix.python }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
 
@@ -100,7 +106,7 @@ jobs:
     - name: set PY_CACHE_KEY
       run: echo "PY_CACHE_KEY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
     - name: Cache .tox
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/.tox/${{ matrix.tox_env }}
         key: "tox|${{ matrix.os }}|${{ matrix.tox_env }}|${{ env.PY_CACHE_KEY }}|${{ hashFiles('tox.ini', 'setup.*') }}"
