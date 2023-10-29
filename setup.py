@@ -47,7 +47,7 @@ setup(
         "Topic :: Software Development :: Debuggers",
     ],
     install_requires=[
-        "fancycompleter @ git+https://github.com/pdbpp/fancycompleter@master#egg=fancycompleter",  # noqa: E501
+        "fancycompleter @ git+https://github.com/bretello/fancycompleter",  # noqa: E501
         "wmctrl",
         "pygments",
     ],
