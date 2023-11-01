@@ -48,7 +48,6 @@ setup(
     ],
     install_requires=[
         "fancycompleter @ git+https://github.com/bretello/fancycompleter",  # noqa: E501
-        "wmctrl",
         "pygments",
     ],
     extras_require={

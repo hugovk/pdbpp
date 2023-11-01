@@ -117,7 +117,6 @@ class DefaultConfig:
     editor = None  # Autodetected if unset.
     stdin_paste = None  # for emacs, you can use my bin/epaste script
     truncate_long_lines = True
-    exec_if_unfocused = None
     disable_pytest_capturing = False
     encodings = ("utf-8", "latin-1")
 
@@ -441,8 +440,6 @@ class Pdb(pdb.Pdb, ConfigurableClass, metaclass=PdbMeta):
             # a command like "continue")
             self.forget()
             return
-        if self.config.exec_if_unfocused:
-            self.exec_if_unfocused()
 
         # Handle post mortem via main: add exception similar to user_exception.
         if frame is None and traceback:
@@ -542,24 +539,6 @@ class Pdb(pdb.Pdb, ConfigurableClass, metaclass=PdbMeta):
                 "   %d frame%s hidden (try 'help hidden_frames')" % (n, plural),
                 file=self.stdout,
             )
-
-    def exec_if_unfocused(self):
-        import os
-
-        import wmctrl
-
-        term = os.getenv("TERM", "")
-        try:
-            winid = int(os.getenv("WINDOWID"))
-        except (TypeError, ValueError):
-            return  # cannot find WINDOWID of the terminal
-        active_win = wmctrl.Window.get_active()
-        if (
-            not active_win
-            or (int(active_win.id, 16) != winid)
-            and not (active_win.wm_class == "emacs.Emacs" and term.startswith("eterm"))
-        ):
-            os.system(self.config.exec_if_unfocused)
 
     def setup(self, frame, tb):
         ret = super().setup(frame, tb)

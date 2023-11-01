@@ -281,11 +281,6 @@ default value:
 ``truncate_long_lines = True``
   Truncate lines which exceed the terminal width.
 
-``exec_if_unfocused = None``
-  Shell command to execute when starting the pdb prompt and the terminal
-  window is not focused.  Useful to e.g. play a sound to alert the user that
-  the execution of the program stopped. It requires the wmctrl_ module.
-
 ``enable_hidden_frames = True``
   Certain frames can be hidden by default.
   If enabled, the commands ``hf_unhide``, ``hf_hide``, and ``hf_list`` can be
@@ -370,7 +365,6 @@ Example::
         pygments_formatter_class = "pygments.formatters.TerminalTrueColorFormatter"
         pygments_formatter_kwargs = {"style": "solarized-light"}
 
-.. _wmctrl: http://bitbucket.org/antocuni/wmctrl
 .. _SGR parameters: https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters
 
 Notes on color options
