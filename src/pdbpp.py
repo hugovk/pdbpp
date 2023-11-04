@@ -534,9 +534,8 @@ class Pdb(pdb.Pdb, ConfigurableClass, metaclass=PdbMeta):
     def print_hidden_frames_count(self):
         n = len(self._hidden_frames)
         if n and self.config.show_hidden_frames_count:
-            plural = n > 1 and "s" or ""
             print(
-                "   %d frame%s hidden (try 'help hidden_frames')" % (n, plural),
+                f"   {n} frame{'s' if n>1 else ''} hidden (try 'help hidden_frames')",
                 file=self.stdout,
             )
 
