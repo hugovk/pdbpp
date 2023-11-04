@@ -23,3 +23,7 @@ ignore = ["F401", "E722"]
 "src/pdbpp.py" = [
     "B019" # lru cache can lead to memory leaks. TODO: stop silencing the error and fix it
 ]
+
+[tool.pytest.ini_options]
+addopts = "-ra --tb short -p pytester"
+testpaths = ["testing"]
