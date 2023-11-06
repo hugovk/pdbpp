@@ -18,7 +18,6 @@ setup(
     use_scm_version=True,
     author="Antonio Cuni",
     author_email="anto.cuni@gmail.com",
-    py_modules=["pdbpp", "_pdbpp_path_hack.pdb"],
     package_dir={"": "src"},
     url="https://github.com/pdbpp/pdbpp",
     project_urls={

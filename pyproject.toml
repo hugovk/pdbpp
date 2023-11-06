@@ -27,3 +27,6 @@ ignore = ["F401", "E722"]
 [tool.pytest.ini_options]
 addopts = "-ra --tb short -p pytester"
 testpaths = ["testing"]
+
+[tool.setuptools_scm]
+write_to = "src/pdbpp_utils/_version.py"

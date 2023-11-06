@@ -30,8 +30,7 @@ from fancycompleter import Color, Completer, ConfigurableClass
 
 __author__ = "Antonio Cuni <anto.cuni@gmail.com>"
 __url__ = "http://github.com/antocuni/pdb"
-__version__ = fancycompleter.LazyVersion("pdbpp")
-
+from pdbpp_utils import __version__
 
 # If it contains only _, digits, letters, [] or dots, it's probably side
 # effects free.
