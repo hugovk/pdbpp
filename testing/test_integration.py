@@ -43,10 +43,11 @@ def test_integration(testdir, readline_param):
     # fancycompleter.
     child.send(b"b \t")
     if readline_param == "pyrepl":
-        child.expect_exact(b'\x1b[1@b\x1b[1@ \x1b[?25ltest_file.py:'
-                           b'\x1b[?12l\x1b[?25h')
+        child.expect_exact(
+            b"\x1b[1@b\x1b[1@ \x1b[?25ltest_file.py:" b"\x1b[?12l\x1b[?25h"
+        )
     else:
-        child.expect_exact(b'b test_file.py:')
+        child.expect_exact(b"b test_file.py:")
 
     child.sendline("")
     if readline_param == "pyrepl":
@@ -60,9 +61,9 @@ def test_integration(testdir, readline_param):
     child.sendline("c")
     rest = child.read()
     if readline_param == "pyrepl":
-        assert rest == b'\x1b[1@c\x1b[9D\r\n\r\x1b[?1l\x1b>'
+        assert rest == b"\x1b[1@c\x1b[9D\r\n\r\x1b[?1l\x1b>"
     else:
-        assert rest == b'c\r\n'
+        assert rest == b"c\r\n"
 
 
 def test_ipython(testdir):

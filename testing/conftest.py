@@ -43,6 +43,7 @@ def restore_settrace(monkeypatch):
             orig_settrace(_orig_trace)
         else:
             orig_settrace(func)
+
     monkeypatch.setattr("sys.settrace", settrace)
 
     yield
@@ -50,8 +51,9 @@ def restore_settrace(monkeypatch):
     newtrace = sys.gettrace()
     if newtrace is not _orig_trace:
         sys.settrace(_orig_trace)
-        assert newtrace is None, (
-            f"tracing function was not reset! Breakpoints left? ({newtrace})")
+        assert (
+            newtrace is None
+        ), f"tracing function was not reset! Breakpoints left? ({newtrace})"
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -110,6 +112,7 @@ def readline_param(request):
 @pytest.fixture
 def monkeypatch_readline(monkeypatch, readline_param):
     """Patch readline to return given results."""
+
     def inner(line, begidx, endidx):
         if readline_param == "pyrepl":
             readline = "pyrepl.readline"
@@ -188,8 +191,9 @@ def monkeypatch_importerror(monkeypatch):
             return orig_import(name, *args)
 
         with monkeypatch.context() as m:
-            m.setattr('builtins.__import__', import_mock)
+            m.setattr("builtins.__import__", import_mock)
             yield m
+
     return cm
 
 

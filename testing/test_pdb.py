@@ -31,7 +31,7 @@ from .conftest import skip_with_missing_pth_file
 # canonical filename accordingly.
 RE_THIS_FILE = re.escape(__file__)
 THIS_FILE_CANONICAL = __file__
-if sys.platform == 'win32':
+if sys.platform == "win32":
     THIS_FILE_CANONICAL = __file__.lower()
 RE_THIS_FILE_CANONICAL = re.escape(THIS_FILE_CANONICAL)
 RE_THIS_FILE_CANONICAL_QUOTED = re.escape(quote(THIS_FILE_CANONICAL))
@@ -44,19 +44,19 @@ class FakeStdin:
 
     def readline(self):
         try:
-            line = next(self.lines) + '\n'
+            line = next(self.lines) + "\n"
             sys.stdout.write(line)
             return line
         except StopIteration:
-            return ''
+            return ""
 
 
 class ConfigTest(DefaultConfig):
     highlight = False
     use_pygments = False
-    prompt = '# '  # because + has a special meaning in the regexp
-    editor = 'emacs'
-    stdin_paste = 'epaste'
+    prompt = "# "  # because + has a special meaning in the regexp
+    editor = "emacs"
+    stdin_paste = "epaste"
     disable_pytest_capturing = False
     current_line_color = 44
 
@@ -83,7 +83,7 @@ class PdbTest(pdbpp.Pdb):
     def __init__(self, *args, **kwds):
         readrc = kwds.pop("readrc", False)
         nosigint = kwds.pop("nosigint", True)
-        kwds.setdefault('Config', ConfigTest)
+        kwds.setdefault("Config", ConfigTest)
         super().__init__(*args, readrc=readrc, **kwds)
         # Do not install sigint_handler in do_continue by default.
         self.nosigint = nosigint
@@ -122,7 +122,7 @@ def set_trace_via_module(frame=None, cleanup=True, Pdb=PdbTest, **kwds):
             super().set_trace(frame, *args, **kwargs)
 
     newglobals = pdbpp.set_trace.__globals__.copy()
-    newglobals['Pdb'] = PdbForFrame
+    newglobals["Pdb"] = PdbForFrame
     new_set_trace = pdbpp.rebind_globals(pdbpp.set_trace, newglobals)
     new_set_trace(**kwds)
 
@@ -149,13 +149,12 @@ def runpdb(func, input, terminal_size=None):
     # Use __dict__ to avoid class descriptor (staticmethod).
     old_get_terminal_size = pdbpp.Pdb.__dict__["get_terminal_size"]
 
-
     class MyBytesIO(BytesIO):
         """write accepts unicode or bytes"""
 
-        encoding = 'ascii'
+        encoding = "ascii"
 
-        def __init__(self, encoding='utf-8'):
+        def __init__(self, encoding="utf-8"):
             self.encoding = encoding
 
         def write(self, msg):
@@ -164,9 +163,12 @@ def runpdb(func, input, terminal_size=None):
             super().write(msg)
 
         def get_unicode_value(self):
-            return self.getvalue().decode(self.encoding).replace(
-                pdbpp.CLEARSCREEN, "<CLEARSCREEN>\n"
-            ).replace(chr(27), "^[")
+            return (
+                self.getvalue()
+                .decode(self.encoding)
+                .replace(pdbpp.CLEARSCREEN, "<CLEARSCREEN>\n")
+                .replace(chr(27), "^[")
+            )
 
     # Use a predictable terminal size.
     if terminal_size is None:
@@ -201,7 +203,7 @@ def runpdb(func, input, terminal_size=None):
 
 
 def is_prompt(line):
-    prompts = {'# ', '(#) ', '((#)) ', '(((#))) ', '(Pdb) ', '(Pdb++) ', '(com++) '}
+    prompts = {"# ", "(#) ", "((#)) ", "(((#))) ", "(Pdb) ", "(Pdb++) ", "(com++) "}
     for prompt in prompts:
         if line.startswith(prompt):
             return len(prompt)
@@ -218,22 +220,22 @@ def extract_commands(lines):
 
 
 shortcuts = [
-    ('[', '\\['),
-    (']', '\\]'),
-    ('(', '\\('),
-    (')', '\\)'),
-    ('^', '\\^'),
-    (r'\(Pdb++\) ', r'\(Pdb\+\+\) '),
-    (r'\(com++\) ', r'\(com\+\+\) '),
-    ('<COLORCURLINE>', r'\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m'),
-    ('<COLORNUM>', r'\^\[\[36;01m *[0-9]+\^\[\[00m'),
-    ('<COLORFNAME>', r'\^\[\[33;01m'),
-    ('<COLORLNUM>', r'\^\[\[36;01m'),
-    ('<COLORRESET>', r'\^\[\[00m'),
-    ('<PYGMENTSRESET>', r'\^\[\[39[^m]*m'),
-    ('NUM', ' *[0-9]+'),
+    ("[", "\\["),
+    ("]", "\\]"),
+    ("(", "\\("),
+    (")", "\\)"),
+    ("^", "\\^"),
+    (r"\(Pdb++\) ", r"\(Pdb\+\+\) "),
+    (r"\(com++\) ", r"\(com\+\+\) "),
+    ("<COLORCURLINE>", r"\^\[\[44m\^\[\[36;01;44m *[0-9]+\^\[\[00;44m"),
+    ("<COLORNUM>", r"\^\[\[36;01m *[0-9]+\^\[\[00m"),
+    ("<COLORFNAME>", r"\^\[\[33;01m"),
+    ("<COLORLNUM>", r"\^\[\[36;01m"),
+    ("<COLORRESET>", r"\^\[\[00m"),
+    ("<PYGMENTSRESET>", r"\^\[\[39[^m]*m"),
+    ("NUM", " *[0-9]+"),
     # Optional message with Python 2.7 (e.g. "--Return--"), not using Pdb.message.
-    ('<PY27_MSG>', '\n.*' if sys.version_info < (3,) else ''),
+    ("<PY27_MSG>", "\n.*" if sys.version_info < (3,) else ""),
 ]
 
 
@@ -251,7 +253,7 @@ def run_func(func, expected, terminal_size=None):
     """
     expected = textwrap.dedent(expected).strip().splitlines()
     # Remove comments.
-    expected = [re.split(r'\s+###', line)[0] for line in expected]
+    expected = [re.split(r"\s+###", line)[0] for line in expected]
     commands = extract_commands(expected)
     expected = list(map(cook_regexp, expected))
 
@@ -278,6 +280,7 @@ def count_frames():
 
 class InnerTestException(Exception):
     """Ignored by check()."""
+
     pass
 
 
@@ -302,25 +305,27 @@ def check(func, expected, terminal_size=None):
                 try:
                     ok = re.match(pattern, string)
                 except re.error as exc:
-                    raise ValueError(f"re.match failed for {pattern!r}: {exc!r}")  # noqa: B904
+                    raise ValueError(
+                        f"re.match failed for {pattern!r}: {exc!r}"
+                    )  # noqa: B904
         else:
             ok = False
             if pattern is None:
-                pattern = '<None>'
+                pattern = "<None>"
             if string is None:
-                string = '<None>'
+                string = "<None>"
         # Use "$" to mark end of line with trailing space
-        if re.search(r'\s+$', string):
-            string += '$'
-        if re.search(r'\s+$', pattern):
-            pattern += '$'
+        if re.search(r"\s+$", string):
+            string += "$"
+        if re.search(r"\s+$", pattern):
+            pattern += "$"
         pattern = trans_trn(pattern)
         string = trans_trn(string)
-        print(pattern.ljust(maxlen+1), '| ', string, end='')
+        print(pattern.ljust(maxlen + 1), "| ", string, end="")
         if ok:
             print()
         else:
-            print(pdbpp.Color.set(pdbpp.Color.red, '    <<<<<'))
+            print(pdbpp.Color.set(pdbpp.Color.red, "    <<<<<"))
             all_ok = False
     assert all_ok
 
@@ -383,7 +388,7 @@ def test_config_pygments(monkeypatch):
 
     assert isinstance(
         Pdb(Config=Config)._get_pygments_formatter(),
-        pygments.formatters.TerminalTrueColorFormatter
+        pygments.formatters.TerminalTrueColorFormatter,
     )
 
     source = Pdb(Config=Config).format_source("print(42)")
@@ -407,14 +412,14 @@ def test_config_missing_pygments(use_pygments, monkeypatch_importerror):
 
     pdb_ = PdbForMessage(Config=Config)
 
-    with monkeypatch_importerror(('pygments', 'pygments.formatters')):
+    with monkeypatch_importerror(("pygments", "pygments.formatters")):
         with pytest.raises(ImportError):
             pdb_._get_pygments_formatter()
         assert pdb_._get_source_highlight_function() is False
         assert pdb_.format_source("print(42)") == "print(42)"
 
     if use_pygments is True:
-        assert pdb_.messages == ['Could not import pygments, disabling.']
+        assert pdb_.messages == ["Could not import pygments, disabling."]
     else:
         assert pdb_.messages == []
 
@@ -429,16 +434,18 @@ def test_config_pygments_deprecated_use_terminal256formatter(monkeypatch):
 
     class Config(DefaultConfig):
         use_terminal256formatter = False
+
     assert isinstance(
         Pdb(Config=Config)._get_pygments_formatter(),
-        pygments.formatters.TerminalFormatter
+        pygments.formatters.TerminalFormatter,
     )
 
     class Config(DefaultConfig):
         use_terminal256formatter = True
+
     assert isinstance(
         Pdb(Config=Config)._get_pygments_formatter(),
-        pygments.formatters.Terminal256Formatter
+        pygments.formatters.Terminal256Formatter,
     )
 
 
@@ -448,9 +455,11 @@ def test_runpdb():
         a = 1
         b = 2
         c = 3
-        return a+b+c
+        return a + b + c
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> a = 1
    5 frames hidden .*
@@ -463,7 +472,8 @@ def test_runpdb():
 -> c = 3
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_set_trace_remembers_previous_state():
@@ -477,7 +487,9 @@ def test_set_trace_remembers_previous_state():
         a = 4
         return a
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> a = 2
    5 frames hidden .*
@@ -493,7 +505,8 @@ a: 1 --> 2
    5 frames hidden .*
 a: 2 --> 3
 # c
-""")
+""",
+    )
 
 
 def test_set_trace_remembers_previous_state_via_module():
@@ -507,7 +520,9 @@ def test_set_trace_remembers_previous_state_via_module():
         a = 4
         return a
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> a = 2
    5 frames hidden .*
@@ -523,7 +538,8 @@ a: 1 --> 2
    5 frames hidden .*
 a: 2 --> 3
 # c
-""")
+""",
+    )
 
 
 class TestPdbMeta:
@@ -531,7 +547,6 @@ class TestPdbMeta:
         assert pdbpp.PdbMeta.called_for_set_trace(sys._getframe()) is False
 
     def test_called_for_set_trace_staticmethod(self):
-
         class Foo:
             @staticmethod
             def set_trace():
@@ -542,7 +557,6 @@ class TestPdbMeta:
         assert Foo.set_trace() is True
 
     def test_called_for_set_trace_method(self):
-
         class Foo:
             def set_trace(self):
                 frame = sys._getframe()
@@ -560,11 +574,11 @@ class TestPdbMeta:
         assert set_trace() is True
 
     def test_called_for_set_trace_via_other_func(self):
-
         def somefunc():
             def meta():
                 frame = sys._getframe()
                 assert pdbpp.PdbMeta.called_for_set_trace(frame) is False
+
             meta()
             return True
 
@@ -578,6 +592,7 @@ def test_forget_with_new_pdb():
     e.g. when pdbpp was used before pytest's debugging plugin was setup, which
     then later uses a custom Pdb wrapper.
     """
+
     def fn():
         set_trace()
 
@@ -589,7 +604,9 @@ def test_forget_with_new_pdb():
         new_pdb = NewPdb()
         new_pdb.set_trace()
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> class NewPdb(PdbTest, pdbpp.Pdb):
    5 frames hidden .*
@@ -612,7 +629,8 @@ NUM .*
 NUM .*
 NUM .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_with_classmethod():
@@ -631,7 +649,9 @@ def test_global_pdb_with_classmethod():
         new_pdb = NewPdb()
         new_pdb.set_trace()
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> assert isinstance(pdbpp.local.GLOBAL_PDB, PdbTest)
    5 frames hidden .*
@@ -641,7 +661,8 @@ new_set_trace
 -> assert pdbpp.local.GLOBAL_PDB is self
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_via_new_class_in_init_method():
@@ -653,7 +674,6 @@ def test_global_pdb_via_new_class_in_init_method():
         class PdbLikePytest:
             @classmethod
             def init_pdb(cls):
-
                 class NewPdb(PdbTest, pdbpp.Pdb):
                     def set_trace(self, frame):
                         print("new_set_trace")
@@ -675,7 +695,9 @@ def test_global_pdb_via_new_class_in_init_method():
         third = pdbpp.local.GLOBAL_PDB
         assert third == second
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> first = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
@@ -690,7 +712,8 @@ new_set_trace
 -> third = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_via_existing_class_in_init_method():
@@ -723,7 +746,9 @@ def test_global_pdb_via_existing_class_in_init_method():
         third = pdbpp.local.GLOBAL_PDB
         assert third == second
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> first = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
@@ -738,7 +763,8 @@ new_set_trace
 -> third = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_can_be_skipped():
@@ -762,7 +788,9 @@ def test_global_pdb_can_be_skipped():
         set_trace(cleanup=False)
         assert pdbpp.local.GLOBAL_PDB is not new_pdb
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> first = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
@@ -778,11 +806,13 @@ new_set_trace
 -> assert pdbpp.local.GLOBAL_PDB is not new_pdb
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_can_be_skipped_unit(monkeypatch_pdb_methods):
     """Same as test_global_pdb_can_be_skipped, but with mocked Pdb methods."""
+
     def fn():
         set_trace()
         first = pdbpp.local.GLOBAL_PDB
@@ -803,12 +833,15 @@ def test_global_pdb_can_be_skipped_unit(monkeypatch_pdb_methods):
         set_trace(cleanup=False)
         assert pdbpp.local.GLOBAL_PDB is not new_pdb
 
-    check(fn, """
+    check(
+        fn,
+        """
 === set_trace
 new_set_trace
 === set_trace
 === set_trace
-""")
+""",
+    )
 
 
 def test_global_pdb_can_be_skipped_but_set():
@@ -832,7 +865,9 @@ def test_global_pdb_can_be_skipped_but_set():
         set_trace(cleanup=False)
         assert pdbpp.local.GLOBAL_PDB is new_pdb
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> first = pdbpp.local.GLOBAL_PDB
    5 frames hidden .*
@@ -849,7 +884,8 @@ new_set_trace
 -> assert pdbpp.local.GLOBAL_PDB is new_pdb
    5 frames hidden .*
 # c
-""")
+""",
+    )
 
 
 def test_global_pdb_can_be_skipped_but_set_unit(monkeypatch_pdb_methods):
@@ -873,13 +909,16 @@ def test_global_pdb_can_be_skipped_but_set_unit(monkeypatch_pdb_methods):
         set_trace(cleanup=False)
         assert pdbpp.local.GLOBAL_PDB is new_pdb
 
-    check(fn, """
+    check(
+        fn,
+        """
 === set_trace
 new_set_trace
 === set_trace
 new_set_trace
 === set_trace
-""")
+""",
+    )
 
 
 def test_global_pdb_only_reused_for_same_class(monkeypatch_pdb_methods):
@@ -910,7 +949,9 @@ def test_global_pdb_only_reused_for_same_class(monkeypatch_pdb_methods):
         new_pdb.set_trace()
         assert pdbpp.local.GLOBAL_PDB is not new_pdb
 
-    check(fn, """
+    check(
+        fn,
+        """
 new_set_trace
 === set_trace
 === set_trace
@@ -920,7 +961,8 @@ new_set_trace
 === set_trace
 new_set_trace
 === set_trace
-""")
+""",
+    )
 
 
 def test_global_pdb_not_reused_with_different_home(
@@ -937,11 +979,14 @@ def test_global_pdb_not_reused_with_different_home(
         set_trace(cleanup=False)
         assert first is not pdbpp.local.GLOBAL_PDB
 
-    check(fn, """
+    check(
+        fn,
+        """
 === set_trace
 === set_trace
 === set_trace
-""")
+""",
+    )
 
 
 def test_single_question_mark():
@@ -952,13 +997,16 @@ def test_single_question_mark():
         def f2(x, y):
             """Return product of x and y"""
             return x * y
+
         set_trace()
         a = 1
         b = 2
         c = 3
-        return a+b+c
+        return a + b + c
 
-    check(fn, fr"""
+    check(
+        fn,
+        rf"""
 [NUM] > .*fn()
 -> a = 1
    5 frames hidden .*
@@ -978,11 +1026,13 @@ def test_single_question_mark():
 # doesnotexist?
 \*\*\* NameError.*
 # c
-    """)
+    """,
+    )
 
 
 def test_double_question_mark():
     """Test do_inspect_with_source."""
+
     def fn():
         class TestStr(str):
             __doc__ = "shortened"
@@ -997,9 +1047,11 @@ def test_double_question_mark():
         a = 1
         b = 2
         c = 3
-        return a+b+c
+        return a + b + c
 
-    check(fn, fr"""
+    check(
+        fn,
+        rf"""
 [NUM] > .*fn()
 -> a = 1
    5 frames hidden .*
@@ -1024,7 +1076,8 @@ def test_double_question_mark():
 ^[[31;01mDocstring:^[[00m      shortened
 ^[[31;01mSource:^[[00m         -
 # c
-    """)
+    """,
+    )
 
 
 def test_question_mark_unit(capsys, LineMatcher):
@@ -1037,15 +1090,17 @@ def test_question_mark_unit(capsys, LineMatcher):
     _pdb.do_inspect("foo")
 
     out, err = capsys.readouterr()
-    LineMatcher(out.splitlines()).fnmatch_lines([
-        "\x1b[31;01mString Form:\x1b[00m    {12: 34}"
-    ])
+    LineMatcher(out.splitlines()).fnmatch_lines(
+        ["\x1b[31;01mString Form:\x1b[00m    {12: 34}"]
+    )
 
     _pdb.do_inspect("doesnotexist")
     out, err = capsys.readouterr()
-    LineMatcher(out.splitlines()).re_match_lines([
-        r"^\*\*\* NameError:",
-    ])
+    LineMatcher(out.splitlines()).re_match_lines(
+        [
+            r"^\*\*\* NameError:",
+        ]
+    )
 
     # Source for function, indented docstring.
     def foo():
@@ -1053,29 +1108,35 @@ def test_question_mark_unit(capsys, LineMatcher):
 
         3rd line."""
         raise NotImplementedError()
+
     _pdb.setup(sys._getframe(), None)
     _pdb.do_inspect_with_source("foo")
     out, err = capsys.readouterr()
-    LineMatcher(out.splitlines()).re_match_lines([
-        r"\x1b\[31;01mDocstring:\x1b\[00m      doc_for_foo",
-        r"",
-        r"                3rd line\.",
-        r"\x1b\[31;01mSource:\x1b\[00m        ",
-        r" ?\d+         def foo\(\):",
-        r" ?\d+             raise NotImplementedError\(\)",
-    ])
+    LineMatcher(out.splitlines()).re_match_lines(
+        [
+            r"\x1b\[31;01mDocstring:\x1b\[00m      doc_for_foo",
+            r"",
+            r"                3rd line\.",
+            r"\x1b\[31;01mSource:\x1b\[00m        ",
+            r" ?\d+         def foo\(\):",
+            r" ?\d+             raise NotImplementedError\(\)",
+        ]
+    )
 
     # Missing source
     _pdb.do_inspect_with_source("str.strip")
     out, err = capsys.readouterr()
-    LineMatcher(out.splitlines()).fnmatch_lines([
-        "\x1b[31;01mSource:\x1b[00m         -",
-    ])
+    LineMatcher(out.splitlines()).fnmatch_lines(
+        [
+            "\x1b[31;01mSource:\x1b[00m         -",
+        ]
+    )
 
 
 def test_single_question_mark_with_existing_command(monkeypatch):
     def mocked_inspect(self, arg):
         print("mocked_inspect: %r" % arg)
+
     monkeypatch.setattr(PdbTest, "do_inspect", mocked_inspect)
 
     def fn():
@@ -1083,10 +1144,13 @@ def test_single_question_mark_with_existing_command(monkeypatch):
 
         class MyClass:
             pass
+
         a = MyClass()  # noqa: F841
         set_trace()
 
-    check(fn, """
+    check(
+        fn,
+        """
 --Return--
 [NUM] > .*fn()->None
 -> set_trace()
@@ -1106,7 +1170,8 @@ do_shell_called: a?
 a(rgs)
 .*
 # c
-""")
+""",
+    )
 
 
 def test_up_local_vars():
@@ -1118,7 +1183,9 @@ def test_up_local_vars():
         xx = 42  # noqa: F841
         nested()
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*nested()
 -> return
    5 frames hidden .*
@@ -1128,7 +1195,8 @@ def test_up_local_vars():
 # xx
 42
 # c
-""")
+""",
+    )
 
 
 def test_frame():
@@ -1142,7 +1210,9 @@ def test_frame():
         set_trace()
         return
 
-    check(a, f"""
+    check(
+        a,
+        f"""
 [NUM] > .*c()
 -> return
    5 frames hidden .*
@@ -1159,18 +1229,22 @@ def test_frame():
 [{len(traceback.extract_stack())}] > .*c()
 -> return
 # c
-    """)
+    """,
+    )
 
 
 def test_fstrings(monkeypatch):
     def mocked_inspect(self, arg):
         print("mocked_inspect: %r" % arg)
+
     monkeypatch.setattr(PdbTest, "do_inspect", mocked_inspect)
 
     def f():
         set_trace()
 
-    check(f, """
+    check(
+        f,
+        """
 --Return--
 [NUM] > .*
 -> set_trace()
@@ -1180,7 +1254,8 @@ def test_fstrings(monkeypatch):
 # f"foo"?
 mocked_inspect: 'f"foo"'
 # c
-""")
+""",
+    )
 
 
 def test_prefixed_strings(monkeypatch):
@@ -1212,7 +1287,10 @@ mocked_inspect: 'r"foo"'
 # u"foo"?
 mocked_inspect: 'u"foo"'
 # c
-""".format(bytestring=b"string", unicodestring="string"))
+""".format(
+            bytestring=b"string", unicodestring="string"
+        ),
+    )
 
 
 def test_up_down_arg():
@@ -1226,7 +1304,9 @@ def test_up_down_arg():
         set_trace()
         return
 
-    check(a, """
+    check(
+        a,
+        """
 [NUM] > .*c()
 -> return
    5 frames hidden .*
@@ -1237,7 +1317,8 @@ def test_up_down_arg():
 [NUM] > .*a()
 -> b()
 # c
-""")
+""",
+    )
 
 
 def test_up_down_sticky():
@@ -1248,7 +1329,9 @@ def test_up_down_sticky():
         set_trace()
         return
 
-    check(a, """
+    check(
+        a,
+        """
 [NUM] > .*b()
 -> return
    5 frames hidden .*
@@ -1266,7 +1349,8 @@ NUM  ->         return
 NUM         def a()
 NUM  ->         b()
 # c
-""")
+""",
+    )
 
 
 def test_top_bottom():
@@ -1281,7 +1365,8 @@ def test_top_bottom():
         return
 
     check(
-        a, f"""
+        a,
+        f"""
 [NUM] > .*c()
 -> return
    5 frames hidden .*
@@ -1292,13 +1377,14 @@ def test_top_bottom():
 [{len(traceback.extract_stack())}] > .*c()
 -> return
 # c
-""")
+""",
+    )
 
 
 def test_top_bottom_frame_post_mortem():
     def fn():
         def throws():
-            0 / 0 # noqa: B018
+            0 / 0  # noqa: B018
 
         def f():
             throws()
@@ -1307,7 +1393,10 @@ def test_top_bottom_frame_post_mortem():
             f()
         except:
             pdbpp.post_mortem(Pdb=PdbTest)
-    check(fn, r"""
+
+    check(
+        fn,
+        r"""
 [2] > .*throws()
 -> 0 / 0
 # top
@@ -1329,7 +1418,8 @@ def test_top_bottom_frame_post_mortem():
 # frame -3
 \*\*\* Out of range
 # c
-""")
+""",
+    )
 
 
 def test_parseline():
@@ -1338,7 +1428,9 @@ def test_parseline():
         set_trace()
         return c
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> return c
    5 frames hidden .*
@@ -1354,23 +1446,28 @@ do_shell_called: 'c'
 # r
 6
 # !!c
-""")
+""",
+    )
 
 
 def test_parseline_with_rc_commands(tmpdir):
     """Test that parseline handles execution of rc lines during setup."""
     with tmpdir.as_cwd():
         with open(".pdbrc", "w") as f:
-            f.writelines([
-                "p 'readrc'\n",
-                "alias myalias print(%1)\n",
-            ])
+            f.writelines(
+                [
+                    "p 'readrc'\n",
+                    "alias myalias print(%1)\n",
+                ]
+            )
 
         def fn():
             alias = "trigger"  # noqa: F841
             set_trace(readrc=True)
 
-        check(fn, """
+        check(
+            fn,
+            """
 --Return--
 'readrc'
 [NUM] > .*fn()->None
@@ -1383,7 +1480,8 @@ myalias = print(%1)
 # myalias 42
 42
 # c
-""")
+""",
+        )
 
 
 def test_parseline_with_existing_command():
@@ -1397,7 +1495,9 @@ def test_parseline_with_existing_command():
         set_trace()
         return c
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> return c
    5 frames hidden .*
@@ -1424,7 +1524,8 @@ True
 # r.text
 'r.text'
 # cont
-""")
+""",
+    )
 
 
 def test_parseline_remembers_smart_command_escape():
@@ -1435,7 +1536,9 @@ def test_parseline_remembers_smart_command_escape():
         n = 44
         return n
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> n = 43
    5 frames hidden .*
@@ -1452,7 +1555,8 @@ def test_parseline_remembers_smart_command_escape():
 # n
 44
 # c
-""")  # noqa: W291
+""",
+    )  # noqa: W291
 
 
 def test_args_name():
@@ -1461,14 +1565,17 @@ def test_args_name():
         set_trace()
         return args
 
-    check(fn, """
+    check(
+        fn,
+        """
 [NUM] > .*fn()
 -> return args
    5 frames hidden .*
 # args
 42
 # c
-""")
+""",
+    )
 
 
 def lineno():
@@ -1542,7 +1649,6 @@ def test_help():
         ("where", "Print a stack trace"),
         ("hidden_frames", 'Some frames might be marked as "hidden"'),
         ("exec", r"Execute the \(one-line\) statement"),
-
         ("hf_list", r"\*\*\* No help"),
         ("paste", r"\*\*\* No help"),
         ("put", r"\*\*\* No help"),
@@ -1577,7 +1683,9 @@ def test_shortlist():
         set_trace(Config=ConfigTest)
         return a
 
-    check(fn, f"""
+    check(
+        fn,
+        f"""
 [NUM] > .*fn()
 -> return a
    5 frames hidden .*
@@ -1587,7 +1695,8 @@ NUM +\t        a = 1
 NUM +\t        set_trace(Config=ConfigTest)
 NUM +->	        return a
 # c
-""")
+""",
+    )
 
 
 def test_shortlist_with_pygments_and_EOF():
@@ -1596,14 +1705,17 @@ def test_shortlist_with_pygments_and_EOF():
         set_trace(Config=ConfigWithPygments)
         return a
 
-    check(fn, f"""
+    check(
+        fn,
+        f"""
 [NUM] > .*fn()
 -> ^[[38;5;28;01mreturn^[[39;00m a
    5 frames hidden .*
 # l {100000}, 3
 [EOF]
 # c
-""")
+""",
+    )
 
 
 def test_shortlist_with_highlight_and_EOF():
@@ -1612,7 +1724,9 @@ def test_shortlist_with_highlight_and_EOF():
         set_trace(Config=ConfigWithHighlight)
         return a
 
-    check(fn, f"""
+    check(
+        fn,
+        f"""
 [NUM] > .*fn()
 -> return a
    5 frames hidden .*
@@ -1621,6 +1735,7 @@ def test_shortlist_with_highlight_and_EOF():
 # c
 """,
     )
+
 
 # a lot of the following tests are sensitive to formatting,
 # so let's avoid formatting to avoid headaches
@@ -3397,7 +3512,6 @@ def test_hidden_pytest_frames():
 # c
     """)
 
-
 def test_hidden_pytest_frames_f_local_nondict():
     class M:
         values = []
@@ -4354,6 +4468,7 @@ def test_completion_uses_tab_from_fancycompleter(monkeypatch_readline):
 True
 # c
 """)
+
 
 
 def test_complete_removes_duplicates_with_coloring(
