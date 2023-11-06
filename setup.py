@@ -28,7 +28,7 @@ setup(
     platforms=["unix", "linux", "osx", "cygwin", "win32"],
     description="pdb++, a drop-in replacement for pdb",
     long_description=long_description,
-    keywords="pdb debugger tab color completion",
+    keywords=["pdb", "debugger", "tab", "color", "completion"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
