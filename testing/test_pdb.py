@@ -1531,7 +1531,6 @@ def test_help():
         ("step", "Execute the current line, stop at the first possible occasion"),
         ("sticky", "Toggle sticky mode"),
         ("tbreak", "arguments as break"),
-        ("track", "track expression"),
         ("u", "Move the current frame .* up"),
         ("unalias", "specified alias."),
         ("undisplay", "Remove expression from the display list"),
@@ -3658,21 +3657,6 @@ False
 # c
 """)
 
-
-def test_track_with_no_args():
-    pytest.importorskip('rpython.translator.tool.reftracker')
-
-    def fn():
-        set_trace()
-        return 42
-
-    check(fn, """
-[NUM] > .*fn()
--> return 42
-# track
-... SyntaxError:
-# c
-""")
 
 
 def test_utf8():

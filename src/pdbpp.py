@@ -1483,28 +1483,6 @@ except for when using the function decorator.
         ns.update(self.curframe_locals)
         code.interact("*interactive*", local=ns)
 
-    def do_track(self, arg):
-        """
-        track expression
-
-        Display a graph showing which objects are referred by the
-        value of the expression.  This command requires pypy to be in
-        the current PYTHONPATH.
-        """
-        try:
-            from rpython.translator.tool.reftracker import track
-        except ImportError:
-            print(
-                "** cannot import pypy.translator.tool.reftracker **", file=self.stdout
-            )
-            return
-        try:
-            val = self._getval(arg)
-        except:
-            pass
-        else:
-            track(val)
-
     def _get_display_list(self):
         return self.display_list.setdefault(self.curframe, {})
 

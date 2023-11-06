@@ -89,11 +89,6 @@ The following are new commands that you can use from the interactive
   names found in the current scope.
 
 
-``track EXPRESSION``
-  Display a graph showing which objects are the value of the expression refers
-  to and are referred by.  This command requires the ``pypy`` source code to
-  be importable.
-
 ``display EXPRESSION``
   Add an expression to the **display list**; expressions in this list are
   evaluated at each step, and printed every time its value changes.
