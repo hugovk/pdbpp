@@ -4007,9 +4007,7 @@ def test_frame_cmd_changes_locals():
 """)
 
 
-@pytest.mark.skipif(not hasattr(pdbpp.pdb.Pdb, "_cmdloop"),
-                    reason="_cmdloop is not available")
-def test_sigint_in_interaction_with_new_cmdloop():
+def test_sigint_in_interaction_with_cmdloop():
     def fn():
         def inner():
             raise KeyboardInterrupt()
@@ -4027,32 +4025,6 @@ ENTERING RECURSIVE DEBUGGER
 --KeyboardInterrupt--
 # c
 """)
-
-
-@pytest.mark.skipif(hasattr(pdbpp.pdb.Pdb, "_cmdloop"),
-                    reason="_cmdloop is available")
-def test_sigint_in_interaction_without_new_cmdloop():
-    def fn():
-        def inner():
-            raise KeyboardInterrupt()
-        set_trace()
-
-    with pytest.raises(KeyboardInterrupt):
-        check(fn, """
---Return--
-[NUM] > .*fn()
--> set_trace()
-   5 frames hidden .*
-# debug inner()
-ENTERING RECURSIVE DEBUGGER
-[NUM] > .*
-(#) c
-""")
-
-    # Reset pdb, which did not clean up correctly.
-    # Needed for PyPy (Python 2.7.13[pypy-7.1.0-final]) with coverage and
-    # restoring trace function.
-    pdbpp.local.GLOBAL_PDB.reset()
 
 
 @pytest.mark.skipif(not hasattr(pdbpp.pdb.Pdb, "_previous_sigint_handler"),
