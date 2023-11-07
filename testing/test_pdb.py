@@ -2061,7 +2061,7 @@ class TestListWithChangedSource:
         testdir.monkeypatch.setenv("PDBPP_COLORS", "0")
         testdir.syspathinsert()
 
-    @pytest.mark.xfail(strict=False, reason="Flaky: fails in tox, succeeds when called with pytest - see https://github.com/nedbat/coveragepy/issues/1420")
+    @pytest.mark.xfail(strict=False, reason="Flaky: fails in tox, succeeds when called with pytest - see https://github.com/nedbat/coveragepy/issues/1420") # noqa: E501
     def test_list_with_changed_source(self):
         from myfile import fn
 
@@ -2095,7 +2095,7 @@ class TestListWithChangedSource:
     (Pdb++) c
     """)
 
-    @pytest.mark.xfail(strict=False, reason="Flaky: fails in tox, succeeds when called with pytest - see https://github.com/nedbat/coveragepy/issues/1420")
+    @pytest.mark.xfail(strict=False, reason="Flaky: fails in tox, succeeds when called with pytest - see https://github.com/nedbat/coveragepy/issues/1420") # noqa: E501
     def test_longlist_with_changed_source(self):
         from myfile import fn
 
