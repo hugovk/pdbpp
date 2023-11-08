@@ -36,18 +36,7 @@ unexpected behavior, please report it as a bug.
 Installation
 ------------
 
-Since ``pdb++`` is not a valid package name the package is named ``pdbpp``::
-
-    $ pip install pdbpp
-
-``pdb++`` is also available via `conda`_::
-
-    $ conda install -c conda-forge pdbpp
-
-Alternatively, you can just put ``pdb.py`` somewhere inside your
-``PYTHONPATH``.
-
-.. _conda: https://anaconda.org/conda-forge/pdbpp
+    $ pip install https://github.com/bretello/pdbpp
 
 Usage
 -----
