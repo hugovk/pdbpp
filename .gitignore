@@ -1,3 +1,5 @@
+src/pdbpp_utils/_version.py
+
 # Ignore local virtualenvs
 syntax:glob
 lib/
