@@ -100,7 +100,7 @@ def readline_param(request):
         try:
             import pyrepl.readline  # noqa: F401
         except ImportError as exc:
-            pytest.skip(msg=f"pyrepl not available: {exc}")
+            pytest.skip(reason=f"pyrepl not available: {exc}")
         finally:
             sys.stdin = old_stdin
         m.setattr("fancycompleter.DefaultConfig.prefer_pyrepl", True)
